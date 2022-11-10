@@ -41,7 +41,7 @@ pipeline {
             }
         }
         stage{
-            steps{
+            steps('Deploy image'){
                 bat "docker run -d $registry:$BUILD_NUMBER"
             }
         }
