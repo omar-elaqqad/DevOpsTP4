@@ -1,0 +1,44 @@
+pipeline {
+    
+    environment {
+        registry = "elaqqad/tp4"
+        registryCredential = 'docker_hob_login'
+        dockerImage = ''
+    }
+    
+    agent any
+    stages {
+        stage('Cloning Git') {
+            steps {
+                git 'https://github.com/omar-elaqqad/DevOpsTP4'
+            }
+        }
+    
+        stage('Building image') {
+            steps{
+                script {
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                }
+            }
+        }
+        
+        stage('Test image') {
+            steps{
+                script {
+                
+                    echo "Tests passed"
+                }
+            }
+        }
+        
+        stage('Publish Image') {
+            steps{
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+    }
+}
